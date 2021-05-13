@@ -1,0 +1,15 @@
+{{- if .Values.jenkins.persistent }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.jenkins.deployment_name }}-claim
+  namespace: {{ $.Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.jenkins.volume_size }}
+  storageClassName: "{{ .Values.jenkins.storageclass }}"
+{{- end }}

@@ -1,0 +1,17 @@
+apiVersion: v2
+name: jenkins-kubernetes
+version: 1.0
+description: Kubernetes-ready Jenkins chart.
+type: application
+keywords:
+  - jenkins
+  - kubernetes
+  - cicd
+  - automation
+  - configuration-as-code
+home: https://jenkins.io
+sources:
+  - https://github.com/mcaimi/jenkins-helm
+maintaners:
+  - url: https://github.com/mcaimi
+

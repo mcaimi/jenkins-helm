@@ -1,0 +1,26 @@
+{{- range $ingress_spec := $.Values.kubernetes.ingress }}
+{{- range $service_spec := $.Values.services }}
+{{- if and ($ingress_spec.enabled) (eq (toString $ingress_spec.service) (toString $service_spec.name )) }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: {{ $.Values.jenkins.deployment_name }}-ingress-{{ $ingress_spec.name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  rules:
+  - host: {{ $ingress_spec.name }}.{{ $.Values.kubernetes.domain }}
+    http:
+      paths:
+      - pathType: {{ $ingress_spec.path_type }}
+        path: {{ $ingress_spec.path }}
+        backend:
+          service:
+            name: {{ $.Values.jenkins.deployment_name }}-service
+            port:
+              number: {{ $service_spec.port }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,38 @@
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: jenkins
+  namespace: {{ $.Release.Namespace }}
+rules:
+- apiGroups: ["*"]
+  resources: ["replicasets", "servicemonitors", "routes", "deploymentconfigs", "builds", "builds/log", "buildconfigs", "buildconfigs/instantiate", "secrets", "imagestreams", "pods", "services", "deployments", "ingresses", "apps", "configmaps", "persistentvolumeclaims"]
+  verbs: ["create","delete","get","list","patch","update","watch"]
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["create","delete","get","list","patch","update","watch"]
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get","list","watch"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "create", "delete"]
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: jenkins-admin
+  namespace: {{ $.Release.Namespace }}
+rules:
+- apiGroups: ["*"]
+  resources: ["replicasets", "servicemonitors", "routes", "deploymentconfigs", "builds", "events", "buildconfigs", "secrets", "imagestreams", "pods", "services", "deployments", "ingresses", "apps", "secrets", "configmaps"]
+  verbs: ["create","delete","get","list","patch","update","watch"]
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["create","delete","get","list","patch","update","watch"]
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get","list","watch"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]

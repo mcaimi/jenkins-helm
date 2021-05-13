@@ -1,0 +1,22 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.jenkins.deployment_name }}-deployment
+  namespace: {{ $.Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.jenkins.app_selector }}
+  template:
+    metadata:
+      # trigger deployments on config map changes
+      annotations:
+        configmap/checksum: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        app: {{ .Values.jenkins.app_selector }}
+        deployment: {{ .Values.jenkins.deployment_name }}
+    spec:
+      {{- include "jenkins.pod" . | nindent 6 }}
+

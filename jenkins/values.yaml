@@ -1,0 +1,72 @@
+# Jenkins global configuration
+jenkins:
+  deployment_name: "jenkins-master"
+  image: "quay.io/marcocaimi/jenkins"
+  tag: "latest"
+  persistent: true
+  volume_size: 1G
+  storageclass: default
+  app_selector: jenkins-master
+  allow_signup: false
+
+# Declare users and associated role
+users:
+  - name: "admin"
+    password: "password"
+    role: "admin"
+  - name: "user1"
+    password: "user123"
+    role: "user"
+
+# declare roles with permissions
+# For permissions, see https://plugins.jenkins.io/role-strategy/
+roles:
+  - name: "admin"
+    description: "Jenkins andministrator role"
+    permissions:
+      - "Overall/Administer"
+  - name: "user"
+    description: "Jenkins users role"
+    permissions:
+      - "Overall/Read"
+      - "Job/Read"
+
+# services exposed
+services:
+  - name: jenkins
+    port: 8080
+    protocol: TCP
+  - name: jnlp
+    port: 50000
+    protocol: TCP
+
+# kubernetes config
+# this section contains all parameters that
+# are used to render ingress manifests
+# Also, information about the cluster itself
+# is used to configure the k8s plugin via config as code
+kubernetes:
+  domain: apps.kubernetes.local
+  ingress:
+    - path: "/"
+      path_type: Prefix
+      service: jenkins
+      enabled: true
+      name: jenkins
+    - path: "/"
+      path_type: Prefix
+      service: jnlp
+      enabled: true
+      name: jenkins-jnlp
+  serviceAccount: ci-jenkins
+  automountSAToken: false
+
+# pod resources limits
+resources:
+  limits:
+    cpu: "2"
+    memory: "4Gi"
+  requests:
+    memory: "2Gi"
+    cpu: "1"
+

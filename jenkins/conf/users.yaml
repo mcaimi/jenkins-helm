@@ -1,0 +1,27 @@
+jenkins:
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global:
+        {{- range $role := .Values.roles }}
+          - name: {{ $role.name }}
+            description: {{ $role.description }}
+            permissions:
+              {{- range $role.permissions }}
+              - {{ . }}
+              {{- end }}
+            assignments:
+            {{- range $user := $.Values.users }}
+            {{- if eq (toString $user.role) (toString $role.name) }}
+              - {{ $user.name }}
+            {{- end }}
+            {{- end }}
+        {{- end }}
+  securityRealm:
+    local:
+      allowsSignup: {{ $.Values.jenkins.allow_signup }}
+      users:
+      {{- range .Values.users }}
+        - id: "{{ .name }}"
+          password: "{{ .password }}"
+      {{- end }}
